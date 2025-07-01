@@ -1,0 +1,62 @@
+<h1>Fase 1: Análise de Requisitos e Pesquisa de Tecnologias</h1>
+<h2>1. Requisitos do Projeto</h2>
+<p>Com base nas informações fornecidas pelo usuário, os requisitos principais para o sistema de visão computacional são:</p>
+<ul>
+<li><strong>Objeto de Inspeção:</strong> Caixas de papelão de diversos tamanhos.</li>
+<li><strong>Conteúdo a Inspecionar:</strong> Embalagens de produto acabado de vários tipos (setups).</li>
+<li><strong>Erro a Detectar:</strong> Apenas a falta de uma ou mais embalagens dentro da caixa.</li>
+<li><strong>Ambiente:</strong> Fábrica, com iluminação ajustável, possível vibração e presença de poeira.</li>
+<li><strong>Velocidade da Linha:</strong> 12 a 20 caixas por minuto (alta velocidade).</li>
+<li><strong>Ação em Caso de Erro:</strong> Luz de aviso, alarme sonoro ou mensagem em software.</li>
+<li><strong>Orçamento:</strong> Flexível inicialmente.</li>
+</ul>
+<h2>2. Tecnologias de Visão Computacional para Detecção de Itens Faltantes</h2>
+<p>A detecção de itens faltantes em um contexto de linha de produção é um caso clássico de aplicação de visão computacional. As abordagens mais relevantes incluem:</p>
+<ul>
+<li><strong>Detecção de Objetos (Object Detection):</strong> Esta técnica envolve treinar um modelo para identificar e localizar objetos específicos (neste caso, as embalagens de produto acabado) dentro de uma imagem. Se o número de objetos detectados for menor que o esperado para um determinado setup de caixa, um item faltante é identificado. É robusta para variações de posição e tamanho dos objetos.</li>
+<li><strong>Detecção de Anomalias (Anomaly Detection):</strong> Embora mais comum para identificar desvios em padrões de dados, pode ser adaptada para visão computacional onde o sistema aprende o que é um estado </li>
+</ul>
+<p>normal' (caixa preenchida corretamente) e sinaliza qualquer desvio. Pode ser útil para casos onde a variação do conteúdo é muito grande e difícil de categorizar por detecção de objetos.
+*   <strong>Classificação de Imagens (Image Classification):</strong> Menos provável para este caso, pois classificaria a imagem inteira como 'correta' ou 'incorreta', sem identificar a localização exata do item faltante. Seria mais útil se o objetivo fosse apenas uma verificação binária simples.
+*   <strong>Segmentação Semântica (Semantic Segmentation):</strong> Identifica e classifica cada pixel de uma imagem, o que permitiria mapear as áreas ocupadas pelas embalagens. Poderia ser usada para verificar se todas as áreas esperadas estão preenchidas. É mais complexa de implementar, mas oferece alta precisão.</p>
+<p>Para o requisito de **</p>
+<p>embalagem faltando</p>
+<p>Para o requisito de <strong>"apenas embalagem faltando dentro da caixa"</strong>, a <strong>Detecção de Objetos</strong> é a abordagem mais direta e eficaz. Ela permite identificar e contar as embalagens presentes, e comparar com o número esperado para cada tipo de setup de caixa. Se o número for inferior, um alerta é gerado.</p>
+<h2>3. Serviços Azure AI para Visão Computacional</h2>
+<p>A Microsoft Azure oferece diversos serviços de IA que podem ser utilizados para implementar a solução de visão computacional:</p>
+<ul>
+<li><strong>Azure Custom Vision:</strong> Este é o serviço mais indicado para o seu caso. Ele permite treinar modelos de detecção de objetos personalizados com seus próprios dados (imagens das caixas preenchidas corretamente e incorretamente). É uma plataforma de "Machine Learning como Serviço" (MLaaS) que simplifica o processo de treinamento, implantação e gerenciamento de modelos de visão computacional, mesmo para quem não tem experiência profunda em aprendizado de máquina. Ele suporta tanto a classificação de imagens quanto a detecção de objetos.<ul>
+<li><strong>Vantagens:</strong> Facilidade de uso, integração com o ecossistema Azure, escalabilidade, e a capacidade de treinar modelos específicos para os seus "setups" de embalagens.</li>
+<li><strong>Desafios:</strong> Requer um conjunto de dados de treinamento de imagens de boa qualidade e representativo para cada tipo de setup de caixa e para os cenários de embalagens faltantes.</li>
+</ul>
+</li>
+<li><strong>Azure Machine Learning:</strong> Para cenários mais complexos ou para quem deseja um controle mais granular sobre o processo de treinamento e os algoritmos, o Azure Machine Learning oferece um ambiente completo para o ciclo de vida do ML, incluindo a construção de modelos de visão computacional usando frameworks como TensorFlow ou PyTorch. No entanto, para este projeto, o Custom Vision é provavelmente mais adequado devido à sua simplicidade e foco na detecção de objetos.</li>
+<li><strong>Azure IoT Edge:</strong> Para processamento de inferência na "borda" (próximo às câmeras na fábrica), o Azure IoT Edge pode ser utilizado. Isso permite que o modelo de IA treinado no Custom Vision seja implantado diretamente em um dispositivo na fábrica, reduzindo a latência e a dependência da conectividade com a nuvem. Isso é crucial para a velocidade de 12-20 caixas por minuto.</li>
+</ul>
+<h2>4. Câmeras Industriais</h2>
+<p>Para o ambiente de fábrica e a velocidade da linha, câmeras industriais são essenciais. Elas são projetadas para robustez, alta performance e durabilidade em condições adversas.</p>
+<p><strong>Características Importantes:</strong></p>
+<ul>
+<li><strong>Resolução e Taxa de Quadros (FPS):</strong> Para 12-20 caixas por minuto, e considerando que a inspeção precisa ser rápida e precisa, câmeras com alta taxa de quadros (FPS - Frames Per Second) são necessárias. Uma resolução adequada (Full HD ou superior) garantirá a captura de detalhes suficientes das embalagens.</li>
+<li><strong>Global Shutter:</strong> Essencial para objetos em movimento rápido. Câmeras com "Global Shutter" capturam a imagem inteira de uma vez, evitando distorções (efeito "rolling shutter") que podem ocorrer com objetos em movimento rápido.</li>
+<li><strong>Proteção Ambiental (IP Rating):</strong> Dada a presença de poeira e possível vibração, câmeras com classificação IP (Ingress Protection) de pelo menos <strong>IP67</strong> são altamente recomendadas. Isso significa que são protegidas contra poeira e imersão temporária em água, garantindo durabilidade no ambiente industrial.</li>
+<li><strong>Interface:</strong> As interfaces comuns para câmeras industriais incluem GigE Vision (Ethernet), USB3 Vision e Camera Link. GigE Vision é popular por sua flexibilidade e capacidade de longas distâncias de cabo.</li>
+<li><strong>Iluminação:</strong> A iluminação é um componente crítico em visão computacional. Para detectar a ausência de embalagens, uma iluminação uniforme e controlada é fundamental para evitar sombras e reflexos que possam confundir o modelo de IA. Luzes LED industriais com difusores são uma boa opção.</li>
+</ul>
+<p><strong>Fabricantes de Câmeras Industriais:</strong></p>
+<p>Alguns fabricantes renomados de câmeras industriais incluem:</p>
+<ul>
+<li><strong>Basler</strong></li>
+<li><strong>FLIR (anteriormente Point Grey)</strong></li>
+<li><strong>IDS Imaging Development Systems</strong></li>
+<li><strong>Baumer</strong></li>
+<li><strong>Teledyne DALSA</strong></li>
+</ul>
+<h2>5. Ação em Caso de Erro (Alertas)</h2>
+<p>As três possibilidades mencionadas são viáveis e podem ser implementadas:</p>
+<ul>
+<li><strong>Luz de Aviso e Alarme Sonoro:</strong> Podem ser acionados por um microcontrolador (como um Arduino ou Raspberry Pi) ou um CLP (Controlador Lógico Programável) que receba um sinal da aplicação de IA (via IoT Edge ou uma API).</li>
+<li><strong>Mensagem em Software:</strong> A aplicação de IA pode enviar notificações para um sistema SCADA, MES, um dashboard web, ou até mesmo para um aplicativo de mensagens (como Teams ou Slack) via APIs de integração. O Azure Functions pode ser usado para orquestrar esses alertas.</li>
+</ul>
+<h2>Próximos Passos</h2>
+<p>Com esta análise inicial, o próximo passo será detalhar a arquitetura da solução, especificando como esses componentes se integrarão e como o fluxo de dados ocorrerá. Em seguida, faremos a pesquisa e seleção de hardware mais específica e o orçamento.</p>

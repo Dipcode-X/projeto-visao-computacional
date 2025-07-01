@@ -1,0 +1,99 @@
+<h1>Fase 2: Especificação Técnica da Arquitetura da Solução</h1>
+<h2>1. Visão Geral da Arquitetura</h2>
+<p>Para atender aos requisitos de detecção de embalagens faltantes em caixas de papelão em uma linha de produção de alta velocidade (12-20 caixas/minuto), com considerações para ambiente industrial (poeira, vibração) e acionamento de alertas visuais/sonoros e em software, a arquitetura proposta se baseia em uma solução híbrida de visão computacional. Esta abordagem combina o poder da nuvem Azure para treinamento e gerenciamento de modelos de IA com o processamento de inferência na "borda" (edge computing) para garantir baixa latência e alta confiabilidade na detecção em tempo real.</p>
+<p>A solução será composta pelos seguintes componentes principais:</p>
+<ul>
+<li><strong>Câmeras Industriais:</strong> Para captura de imagens de alta qualidade e velocidade das caixas.</li>
+<li><strong>Dispositivo Edge (Azure IoT Edge):</strong> Um computador industrial ou dispositivo embarcado para processar as imagens localmente e executar o modelo de IA.</li>
+<li><strong>Azure Custom Vision:</strong> Serviço de nuvem para treinamento e gerenciamento do modelo de detecção de objetos.</li>
+<li><strong>Azure IoT Hub:</strong> Para comunicação segura e bidirecional entre a nuvem e o dispositivo Edge.</li>
+<li><strong>Mecanismos de Alerta:</strong> Hardware (luzes, alarmes) e software (notificações) para sinalizar a detecção de anomalias.</li>
+</ul>
+<p>Esta arquitetura visa otimizar o desempenho, a escalabilidade e a robustez, minimizando a dependência de conectividade constante com a nuvem para a operação diária de inspeção. O treinamento do modelo será realizado na nuvem, onde há maior poder computacional, e a inferência (a detecção propriamente dita) será feita no dispositivo Edge, próximo à fonte dos dados (as câmeras).</p>
+<h2>2. Componentes da Arquitetura</h2>
+<h3>2.1. Câmeras Industriais</h3>
+<p><strong>Função:</strong> Capturar imagens de alta resolução e alta velocidade das caixas enquanto elas passam pela linha de produção. Duas câmeras serão posicionadas acima das bancadas para garantir uma visão completa do interior das caixas.</p>
+<p><strong>Especificações Chave:</strong></p>
+<ul>
+<li><strong>Tipo:</strong> Câmeras de visão de máquina (Machine Vision Cameras).</li>
+<li><strong>Sensor:</strong> CMOS com Global Shutter. Essencial para evitar distorções de movimento (rolling shutter) em objetos que se movem rapidamente na linha de produção. [1]</li>
+<li><strong>Resolução:</strong> Mínimo de 2 Megapixels (Full HD - 1920x1080 pixels) para garantir detalhes suficientes das embalagens, mesmo as menores. Resoluções maiores (e.g., 5MP) podem ser consideradas para maior precisão, dependendo do tamanho das embalagens e da distância da câmera.</li>
+<li><strong>Taxa de Quadros (FPS):</strong> Mínimo de 30 FPS. Para uma linha de 20 caixas/minuto (0.33 caixas/segundo), ter múltiplos quadros por caixa permite maior flexibilidade na captura e seleção da melhor imagem para análise. Câmeras com 60 FPS ou mais seriam ideais para garantir robustez.</li>
+<li><strong>Interface:</strong> GigE Vision (Gigabit Ethernet). Oferece boa largura de banda para alta resolução e FPS, além de permitir cabos mais longos (até 100 metros sem repetidores) e alimentação via Power over Ethernet (PoE), simplificando a instalação. [2]</li>
+<li><strong>Proteção Ambiental (IP Rating):</strong> IP67. Garante proteção total contra poeira e imersão temporária em água (até 1 metro por 30 minutos), crucial para o ambiente industrial com poeira e possível limpeza. [3]</li>
+<li><strong>Lente:</strong> Lentes de montagem C-mount ou CS-mount, com distância focal ajustável para otimizar o campo de visão e a profundidade de campo, garantindo que todo o interior da caixa esteja em foco.</li>
+<li><strong>Iluminação:</strong> Iluminadores LED industriais com difusores. A iluminação deve ser uniforme, sem sombras ou reflexos que possam prejudicar a detecção. A luz deve ser constante e não estroboscópica para evitar problemas com o global shutter. A escolha da cor da luz (branca, infravermelha, etc.) dependerá do contraste com as embalagens e o interior da caixa.</li>
+</ul>
+<p><strong>Fabricantes Sugeridos:</strong> Basler, FLIR (Teledyne FLIR), IDS Imaging Development Systems, Baumer. Essas empresas oferecem câmeras robustas e de alta performance adequadas para aplicações industriais.</p>
+<h3>2.2. Dispositivo Edge (Azure IoT Edge)</h3>
+<p><strong>Função:</strong> Atuar como o "cérebro" local do sistema. Ele receberá as imagens das câmeras, executará o modelo de IA treinado para detecção de objetos e, com base nos resultados, acionará os alertas necessários. O Azure IoT Edge permite a implantação de cargas de trabalho de nuvem (como módulos de IA) diretamente em dispositivos locais. [4]</p>
+<p><strong>Especificações Chave:</strong></p>
+<ul>
+<li><strong>Processador:</strong> CPU multi-core (e.g., Intel Core i5/i7 ou equivalente) ou, idealmente, um processador com GPU integrada ou dedicada (e.g., NVIDIA Jetson series, Intel Movidius VPU) para aceleração de inferência de IA. A inferência de modelos de visão computacional é computacionalmente intensiva e se beneficia enormemente de aceleração por hardware.</li>
+<li><strong>Memória RAM:</strong> Mínimo de 8GB, preferencialmente 16GB ou mais, para lidar com o processamento de imagens em tempo real e a execução do sistema operacional.</li>
+<li><strong>Armazenamento:</strong> SSD (Solid State Drive) de 128GB ou mais para o sistema operacional e armazenamento temporário de imagens/dados. SSDs são mais resistentes a vibrações do que HDDs.</li>
+<li><strong>Conectividade:</strong> Portas Gigabit Ethernet para conexão com as câmeras (via switch PoE, se necessário) e para comunicação com a rede da fábrica/internet. Wi-Fi pode ser uma opção secundária para gerenciamento.</li>
+<li><strong>Sistema Operacional:</strong> Linux (Ubuntu Server é uma escolha comum para IoT Edge) ou Windows IoT Enterprise.</li>
+<li><strong>Formato:</strong> Computador industrial robusto, com classificação de proteção (e.g., IP54 ou superior para o gabinete) e resistência a vibrações e temperaturas industriais.</li>
+</ul>
+<p><strong>Exemplos de Dispositivos:</strong> PCs industriais de fabricantes como Advantech, Moxa, ou plataformas de desenvolvimento como NVIDIA Jetson Orin Nano/Xavier NX para soluções mais embarcadas e otimizadas para IA.</p>
+<h3>2.3. Azure Custom Vision</h3>
+<p><strong>Função:</strong> Serviço de nuvem para o ciclo de vida completo do modelo de detecção de objetos. Será utilizado para:</p>
+<ol>
+<li><strong>Coleta e Marcação de Imagens:</strong> Upload de imagens das caixas (preenchidas corretamente e com embalagens faltantes) e marcação manual das embalagens em cada imagem (bounding boxes).</li>
+<li><strong>Treinamento do Modelo:</strong> O Custom Vision utiliza as imagens marcadas para treinar um modelo de detecção de objetos personalizado. Ele automatiza a seleção de algoritmos e o ajuste de hiperparâmetros.</li>
+<li><strong>Avaliação do Modelo:</strong> Fornece métricas de desempenho (precisão, recall, mAP) para avaliar a eficácia do modelo.</li>
+<li><strong>Exportação/Implantação:</strong> Permite exportar o modelo treinado para ser executado em dispositivos Edge (formato ONNX, Docker Container) ou implantá-lo como um endpoint de API na nuvem. [5]</li>
+</ol>
+<p><strong>Vantagens:</strong> Facilidade de uso, não exige conhecimento profundo em Machine Learning, interface gráfica intuitiva, e integração nativa com o Azure IoT Edge.</p>
+<h3>2.4. Azure IoT Hub</h3>
+<p><strong>Função:</strong> Atuar como um hub de mensagens centralizado para comunicação bidirecional segura entre o dispositivo Edge na fábrica e os serviços de nuvem Azure. [6]</p>
+<ul>
+<li><strong>Gerenciamento de Dispositivos:</strong> Permite registrar, monitorar e gerenciar os dispositivos IoT Edge.</li>
+<li><strong>Roteamento de Mensagens:</strong> Encaminha mensagens de telemetria (e.g., resultados de inferência do modelo, status do dispositivo) do Edge para a nuvem e mensagens de comando (e.g., atualização de modelo, reinício do dispositivo) da nuvem para o Edge.</li>
+<li><strong>Segurança:</strong> Garante a comunicação segura e autenticada entre todos os componentes.</li>
+</ul>
+<h3>2.5. Mecanismos de Alerta</h3>
+<p><strong>Função:</strong> Fornecer feedback imediato aos colaboradores e registrar os eventos de não conformidade.</p>
+<ul>
+<li><strong>Luz de Aviso e Alarme Sonoro:</strong><ul>
+<li><strong>Hardware:</strong> Uma torre de sinalização industrial (stack light) com cores diferentes (e.g., verde para OK, vermelho para erro) e um alarme sonoro. [7]</li>
+<li><strong>Acionamento:</strong> O dispositivo Edge, ao detectar uma caixa com embalagem faltante, enviará um sinal para um microcontrolador (e.g., Raspberry Pi Pico, ESP32) ou um módulo de I/O digital conectado ao computador industrial. Este microcontrolador/módulo acionará a luz e o alarme.</li>
+</ul>
+</li>
+<li><strong>Mensagem em Software:</strong><ul>
+<li><strong>Implementação:</strong> O dispositivo Edge pode enviar uma mensagem (via IoT Hub) para um serviço Azure Function na nuvem. Este Azure Function pode então:<ul>
+<li>Gravar o evento em um banco de dados (e.g., Azure Cosmos DB, Azure SQL Database) para registro e análise posterior.</li>
+<li>Enviar uma notificação para um dashboard de monitoramento em tempo real (e.g., Power BI, Azure IoT Central).</li>
+<li>Integrar com sistemas de mensagens corporativos (e.g., Microsoft Teams, Slack) via webhooks ou APIs para alertar supervisores.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>3. Fluxo de Dados e Processamento</h2>
+<p>O fluxo de dados e processamento da solução será o seguinte:</p>
+<ol>
+<li><strong>Captura de Imagem:</strong> As câmeras industriais capturam imagens de alta velocidade do interior das caixas enquanto elas são preenchidas ou logo após o preenchimento.</li>
+<li><strong>Envio para o Edge:</strong> As imagens são enviadas (via GigE Vision) para o Dispositivo Edge.</li>
+<li><strong>Pré-processamento (Opcional, no Edge):</strong> O dispositivo Edge pode realizar um pré-processamento básico das imagens (e.g., redimensionamento, ajuste de contraste) para otimizar a inferência.</li>
+<li><strong>Inferência de IA (no Edge):</strong> O modelo de detecção de objetos, implantado como um módulo IoT Edge, analisa a imagem para identificar e contar as embalagens presentes.</li>
+<li><strong>Lógica de Decisão (no Edge):</strong> Uma lógica de aplicação no dispositivo Edge compara o número de embalagens detectadas com o número esperado para o tipo de caixa/setup atual. Se houver uma discrepância (embalagem faltando), um evento de "não conformidade" é gerado.</li>
+<li><strong>Acionamento de Alertas (no Edge e Nuvem):</strong><ul>
+<li><strong>Local:</strong> O dispositivo Edge aciona diretamente a luz de aviso e o alarme sonoro via I/O digital.</li>
+<li><strong>Nuvem:</strong> O dispositivo Edge envia uma mensagem de telemetria (contendo detalhes da não conformidade, como timestamp, ID da caixa, tipo de erro, imagem da não conformidade) para o Azure IoT Hub.</li>
+</ul>
+</li>
+<li><strong>Processamento na Nuvem:</strong> O IoT Hub encaminha a mensagem para um Azure Function, que processa o evento, registra no banco de dados e envia notificações para os sistemas de software relevantes.</li>
+</ol>
+<h2>4. Diagrama de Arquitetura</h2>
+<p>Para visualizar melhor a interação entre os componentes, o diagrama de arquitetura a seguir ilustra o fluxo da solução.</p>
+<p><code>![Diagrama de Arquitetura da Solução](arquitetura_solucao.png)</code></p>
+<h2>5. Referências</h2>
+<p>[1] Global Shutter vs. Rolling Shutter. Disponível em: <a href="https://www.baslerweb.com/en/sales/support/knowledge-base/global-shutter-vs-rolling-shutter/">https://www.baslerweb.com/en/sales/support/knowledge-base/global-shutter-vs-rolling-shutter/</a></p>
+<p>[2] GigE Vision. Disponível em: <a href="https://www.euresys.com/en/Products/Machine-Vision-Standards/GigE-Vision">https://www.euresys.com/en/Products/Machine-Vision-Standards/GigE-Vision</a></p>
+<p>[3] IP Code (Ingress Protection). Disponível em: <a href="https://en.wikipedia.org/wiki/IP_Code">https://en.wikipedia.org/wiki/IP_Code</a></p>
+<p>[4] O que é o Azure IoT Edge. Disponível em: <a href="https://learn.microsoft.com/pt-br/azure/iot-edge/about-iot-edge">https://learn.microsoft.com/pt-br/azure/iot-edge/about-iot-edge</a></p>
+<p>[5] Documentação do Azure Custom Vision. Disponível em: <a href="https://learn.microsoft.com/pt-br/azure/ai-services/custom-vision-service/">https://learn.microsoft.com/pt-br/azure/ai-services/custom-vision-service/</a></p>
+<p>[6] O que é o Azure IoT Hub. Disponível em: <a href="https://learn.microsoft.com/pt-br/azure/iot-hub/about-iot-hub">https://learn.microsoft.com/pt-br/azure/iot-hub/about-iot-hub</a></p>
+<p>[7] Torres de Sinalização Industriais. Disponível em: <a href="https://www.patlite.com/products/signal-towers/">https://www.patlite.com/products/signal-towers/</a></p>
