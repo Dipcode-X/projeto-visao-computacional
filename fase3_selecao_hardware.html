@@ -1,0 +1,135 @@
+<h1>Fase 3: Pesquisa e Seleção de Hardware</h1>
+<p>Com base na arquitetura definida, esta fase se concentra na identificação de componentes de hardware específicos que atendam aos requisitos técnicos e ambientais do projeto.</p>
+<h2>1. Câmeras Industriais</h2>
+<p>Para a detecção de embalagens faltantes em caixas em uma linha de produção de alta velocidade, com a presença de poeira e vibração, as câmeras industriais devem possuir características específicas para garantir desempenho e durabilidade. A pesquisa focou em modelos com sensor CMOS Global Shutter, resolução Full HD (2MP) ou superior, taxa de quadros (FPS) de 30 ou mais, interface GigE Vision e proteção IP67.</p>
+<h3>Modelos Sugeridos:</h3>
+<ol>
+<li>
+<p><strong>e-con Systems RouteCAM_CU25:</strong></p>
+<ul>
+<li><strong>Características:</strong> Câmera externa IP67 com sensor AR0234 e Global Shutter. Projetada para ambientes agressivos, oferece imagens sem desfoque. [1]</li>
+<li><strong>Resolução:</strong> Full HD (1920x1080).</li>
+<li><strong>Interface:</strong> GigE.</li>
+<li><strong>Proteção:</strong> IP67.</li>
+<li><strong>Considerações:</strong> Parece ser uma opção robusta e diretamente alinhada com os requisitos de proteção ambiental.</li>
+</ul>
+</li>
+<li>
+<p><strong>LUCID Vision Labs Triton Series:</strong></p>
+<ul>
+<li><strong>Características:</strong> Câmeras industriais robustas com classificação IP67, projetadas para ambientes industriais. Possuem sensores CMOS Global Shutter de última geração (Pregius S da Sony). [2]</li>
+<li><strong>Resolução:</strong> Varia de 1.6 MP a 20 MP, permitindo escolher a resolução ideal.</li>
+<li><strong>Interface:</strong> GigE, 2.5GigE, 5GigE, 10GigE (dependendo do modelo).</li>
+<li><strong>Proteção:</strong> IP67.</li>
+<li><strong>Considerações:</strong> Uma linha de produtos muito promissora devido à sua robustez e variedade de modelos que se encaixam nos requisitos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Basler ace 2 (com caixa IP67):</strong></p>
+<ul>
+<li><strong>Características:</strong> As câmeras Basler ace 2 são amplamente reconhecidas pela sua qualidade e desempenho. Embora nem todos os modelos ace 2 venham com IP67 integrado, a Basler oferece caixas IP67 separadas que podem ser usadas com as câmeras ace 2 (e ace U, ace Classic) com interface GigE. [3]</li>
+<li><strong>Resolução:</strong> Varia amplamente (ex: a2A2590-22gcBAS com 5 MP a 22 FPS, a2A4096-44g5cBAS com 12.3 MP a 44 FPS). É importante selecionar um modelo ace 2 com Global Shutter e a resolução/FPS desejados.</li>
+<li><strong>Interface:</strong> GigE.</li>
+<li><strong>Proteção:</strong> IP67 (com caixa externa).</li>
+<li><strong>Considerações:</strong> Uma solução flexível, permitindo escolher a câmera Basler ace 2 mais adequada e adicionar a proteção IP67.</li>
+</ul>
+</li>
+<li>
+<p><strong>Teledyne FLIR Blackfly S GigE:</strong></p>
+<ul>
+<li><strong>Características:</strong> Série versátil e compacta de câmeras de visão de máquina. Alguns modelos são projetados para ambientes industriais e podem ser encontrados com proteção IP67 ou em versões robustas. [4]</li>
+<li><strong>Resolução:</strong> Varia de 1.6 MP a 20 MP.</li>
+<li><strong>Interface:</strong> GigE.</li>
+<li><strong>Proteção:</strong> Alguns modelos ou linhas específicas (como a Forge® 1GigE IP67 series) oferecem IP67. [5]</li>
+<li><strong>Considerações:</strong> Uma opção sólida, mas é crucial verificar o modelo específico para garantir a proteção IP67 e o Global Shutter.</li>
+</ul>
+</li>
+<li>
+<p><strong>IDS Imaging uEye FA (com proteção IP65/67):</strong></p>
+<ul>
+<li><strong>Características:</strong> Câmeras industriais projetadas para automação de fábrica, com proteção IP65/67 e tubo de lente para proteção contra sujeira, poeira e água. [6]</li>
+<li><strong>Resolução:</strong> Varia.</li>
+<li><strong>Interface:</strong> GigE Ethernet.</li>
+<li><strong>Proteção:</strong> IP65/67.</li>
+<li><strong>Considerações:</strong> Outra excelente opção com proteção ambiental integrada.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Recomendação Preliminar para Câmeras:</strong></p>
+<p>Para este projeto, a <strong>LUCID Vision Labs Triton Series</strong> e as <strong>IDS Imaging uEye FA</strong> parecem ser as mais adequadas devido à sua robustez e proteção IP67 integrada, simplificando a instalação. A <strong>Basler ace 2 com caixa IP67</strong> também é uma excelente alternativa, oferecendo grande flexibilidade na escolha do sensor. A escolha final dependerá da disponibilidade, custo e testes práticos de imagem. Serão necessárias <strong>duas unidades</strong> de qualquer modelo escolhido.</p>
+<h2>2. Dispositivo Edge (Azure IoT Edge)</h2>
+<p>O dispositivo Edge deve ser capaz de processar imagens em tempo real e executar o modelo de IA com baixa latência. A aceleração por GPU é altamente recomendada para o desempenho da inferência.</p>
+<h3>Modelos Sugeridos:</h3>
+<ol>
+<li>
+<p><strong>NVIDIA Jetson Xavier NX Developer Kit (ou módulos embarcados):</strong></p>
+<ul>
+<li><strong>Características:</strong> Plataforma de computação embarcada com GPU NVIDIA integrada, ideal para aplicações de IA na borda. Oferece alto desempenho para inferência de modelos de visão computacional. [7]</li>
+<li><strong>Conectividade:</strong> Múltiplas portas Gigabit Ethernet, USB.</li>
+<li><strong>Formato:</strong> Pequeno, mas requer um gabinete industrial adequado para proteção contra poeira e vibração.</li>
+<li><strong>Considerações:</strong> Excelente desempenho de IA, mas o custo pode ser um fator. Requer integração com um gabinete industrial.</li>
+</ul>
+</li>
+<li>
+<p><strong>Advantech UNO-2271G-E21AE (ou série UNO):</strong></p>
+<ul>
+<li><strong>Características:</strong> PC industrial compacto e sem ventoinha, projetado para ambientes industriais. Possui processadores Intel Atom/Celeron e múltiplas portas I/O. Alguns modelos podem ser configurados com módulos de aceleração de IA (e.g., Intel Movidius VPU). [8]</li>
+<li><strong>Conectividade:</strong> Portas Gigabit Ethernet, USB, RS-232/485.</li>
+<li><strong>Formato:</strong> Robusto, sem ventoinha, resistente a poeira e vibração.</li>
+<li><strong>Considerações:</strong> Solução mais "plug-and-play" para ambiente industrial, mas o desempenho de IA pode ser menor que o Jetson se não houver aceleração por GPU dedicada.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dell Edge Gateway 3000/5000 Series:</strong></p>
+<ul>
+<li><strong>Características:</strong> Gateways industriais robustos, projetados para IoT e computação de borda. Oferecem boa conectividade e opções de processamento. [9]</li>
+<li><strong>Conectividade:</strong> Variada, incluindo Ethernet, Wi-Fi, celular.</li>
+<li><strong>Formato:</strong> Industrial, resistente.</li>
+<li><strong>Considerações:</strong> Opção de um fornecedor conhecido, com suporte e ecossistema estabelecidos.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Recomendação Preliminar para Dispositivo Edge:</strong></p>
+<p>Para o melhor desempenho na inferência de IA e considerando a velocidade da linha, um dispositivo com aceleração por GPU, como o <strong>NVIDIA Jetson Xavier NX</strong>, é altamente recomendado. No entanto, será necessário um gabinete industrial adequado para protegê-lo. Se a simplicidade de implantação for prioritária, um <strong>PC industrial da Advantech</strong> com módulo de aceleração de IA seria uma alternativa viável.</p>
+<h2>3. Mecanismos de Alerta</h2>
+<h3>3.1. Luz de Aviso / Alarme Sonoro</h3>
+<ol>
+<li>
+<p><strong>Torre de Sinalização Industrial (Stack Light):</strong></p>
+<ul>
+<li><strong>Fabricantes:</strong> Patlite, Werma, Schneider Electric, Siemens.</li>
+<li><strong>Características:</strong> Múltiplas cores (verde, amarelo, vermelho) para diferentes status, com opção de módulo sonoro integrado. Proteção IP65 ou superior. [10]</li>
+<li><strong>Conexão:</strong> Geralmente acionadas por sinais digitais (24V DC), que podem vir de um relé controlado pelo dispositivo Edge ou por um microcontrolador.</li>
+</ul>
+</li>
+<li>
+<p><strong>Microcontrolador/Módulo I/O:</strong></p>
+<ul>
+<li><strong>Raspberry Pi Pico / ESP32:</strong> Microcontroladores de baixo custo que podem receber comandos do dispositivo Edge (via serial, Ethernet, ou MQTT) e acionar relés para controlar a torre de sinalização e o alarme sonoro. [11]</li>
+<li><strong>Módulo de I/O Digital Industrial:</strong> Módulos como os da Moxa ou Advantech que se conectam ao PC industrial e fornecem saídas digitais para acionar os dispositivos de alerta. [12]</li>
+</ul>
+</li>
+</ol>
+<p><strong>Recomendação Preliminar para Alerta Local:</strong></p>
+<p>Uma <strong>Torre de Sinalização Industrial (Patlite ou Werma)</strong> com módulo sonoro, acionada por um <strong>Raspberry Pi Pico</strong> (para simplicidade e baixo custo) ou um <strong>Módulo de I/O Digital Industrial</strong> (para maior robustez e integração direta com o PC industrial) conectado ao Dispositivo Edge.</p>
+<h3>3.2. Mensagem em Software</h3>
+<p>Esta parte será implementada principalmente via serviços Azure, conforme detalhado na arquitetura. Não há hardware específico a ser selecionado aqui, mas sim a configuração dos serviços:</p>
+<ul>
+<li><strong>Azure IoT Hub:</strong> Já mencionado como parte central da comunicação.</li>
+<li><strong>Azure Function:</strong> Para processar mensagens do IoT Hub e orquestrar as notificações.</li>
+<li><strong>Azure Cosmos DB / Azure SQL Database:</strong> Para armazenamento de logs e dados de não conformidade.</li>
+<li><strong>Microsoft Teams / Slack / Dashboard Web:</strong> Para a interface de notificação ao usuário.</li>
+</ul>
+<h2>4. Referências</h2>
+<p>[1] e-con Systems RouteCAM_CU25. Disponível em: <a href="https://www.e-consystems.com/gige-cameras/ar0234-global-shutter-full-hd-gige-camera.asp">https://www.e-consystems.com/gige-cameras/ar0234-global-shutter-full-hd-gige-camera.asp</a></p>
+<p>[2] LUCID Vision Labs Triton Series. Disponível em: <a href="https://thinklucid.com/lucid-machine-vision-cameras/">https://thinklucid.com/lucid-machine-vision-cameras/</a></p>
+<p>[3] Basler IP67 Housing. Disponível em: <a href="https://www.baslerweb.com/en/accessories/ip67-housing/">https://www.baslerweb.com/en/accessories/ip67-housing/</a></p>
+<p>[4] Teledyne FLIR Blackfly S GigE. Disponível em: <a href="https://www.teledynevisionsolutions.com/en-ca/products/blackfly-s-gige">https://www.teledynevisionsolutions.com/en-ca/products/blackfly-s-gige</a></p>
+<p>[5] Teledyne FLIR Forge® 1GigE IP67 series. Disponível em: <a href="https://www.govolition.com/product/V41-13-918">https://www.govolition.com/product/V41-13-918</a> (Nota: Este link é para um produto específico, mas a série Forge é mencionada como IP67).</p>
+<p>[6] IDS Imaging uEye FA. Disponível em: <a href="https://en.ids-imaging.com/ueye-fa.html">https://en.ids-imaging.com/ueye-fa.html</a></p>
+<p>[7] NVIDIA Jetson Xavier NX. Disponível em: <a href="https://developer.nvidia.com/embedded/jetson-xavier-nx-developer-kit">https://developer.nvidia.com/embedded/jetson-xavier-nx-developer-kit</a></p>
+<p>[8] Advantech UNO-2271G. Disponível em: <a href="https://www.advantech.com/products/6006733f-679a-4122-8321-120017124803/uno-2271g/mod_00994770-496e-4734-9273-030403333333">https://www.advantech.com/products/6006733f-679a-4122-8321-120017124803/uno-2271g/mod_00994770-496e-4734-9273-030403333333</a></p>
+<p>[9] Dell Edge Gateway. Disponível em: <a href="https://www.dell.com/en-us/dt/edge/edge-gateways.htm">https://www.dell.com/en-us/dt/edge/edge-gateways.htm</a></p>
+<p>[10] Patlite Signal Towers. Disponível em: <a href="https://www.patlite.com/products/signal-towers/">https://www.patlite.com/products/signal-towers/</a></p>
+<p>[11] Raspberry Pi Pico. Disponível em: <a href="https://www.raspberrypi.com/products/raspberry-pi-pico/">https://www.raspberrypi.com/products/raspberry-pi-pico/</a></p>
+<p>[12] Moxa Industrial I/O. Disponível em: <a href="https://www.moxa.com/en/products/industrial-edge-connectivity/industrial-ethernet-io">https://www.moxa.com/en/products/industrial-edge-connectivity/industrial-ethernet-io</a></p>

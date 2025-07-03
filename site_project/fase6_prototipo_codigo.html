@@ -1,0 +1,123 @@
+<h1>Fase 6: Criação de Protótipo de Código e Documentação</h1>
+<p>Nesta fase, um protótipo de código foi desenvolvido para simular o fluxo principal do sistema de visão computacional, desde a captura da imagem até a detecção de itens faltantes e o acionamento dos alertas. Este protótipo serve como uma demonstração conceitual da lógica que será implementada no dispositivo Edge.</p>
+<h2>1. Protótipo de Simulação de Detecção de Itens Faltantes (<code>detection_simulator.py</code>)</h2>
+<p>Este script Python simula as etapas de captura de imagem, detecção de objetos e a lógica de decisão para identificar embalagens faltantes, acionando alertas locais e enviando mensagens para um software.</p>
+<h3>Código-Fonte:</h3>
+<p>```python
+import time
+import random</p>
+<p>def simulate_image_capture():
+    """Simula a captura de uma imagem da caixa."""
+    print("Simulando captura de imagem...")
+    time.sleep(0.5)
+    return {"status": "success", "image_data": "simulated_image_bytes"}</p>
+<p>def simulate_object_detection(image_data, expected_items):
+    """Simula a detecção de objetos e a contagem de itens.
+    Retorna o número de itens detectados.
+    """
+    print("Simulando detecção de objetos na imagem...")
+    time.sleep(1)
+    # Simula a detecção: 90% de chance de estar correto, 10% de chance de faltar 1 item
+    if random.random() &lt; 0.9:
+        detected_items = expected_items
+    else:
+        detected_items = expected_items - 1 if expected_items &gt; 0 else 0
+    print(f"Itens esperados: {expected_items}, Itens detectados: {detected_items}")
+    return detected_items</p>
+<p>def trigger_local_alert(is_error):
+    """Simula o acionamento de luz de aviso e alarme sonoro."""
+    if is_error:
+        print("\n!!! ALERTA LOCAL: LUZ VERMELHA LIGADA E ALARME SONORO ATIVADO !!!")
+    else:
+        print("ALERTA LOCAL: LUZ VERDE LIGADA (OK)")</p>
+<p>def send_software_message(message):
+    """Simula o envio de uma mensagem para um software/dashboard."""
+    print(f"MENSAGEM SOFTWARE: {message}")</p>
+<p>def main():
+    print("\n--- Simulador de Sistema de Visão Computacional ---")
+    expected_items_per_box = 5 # Exemplo: 5 embalagens por caixa</p>
+<pre><code>for i in range(1, 6): # Simula 5 caixas passando pela linha
+    print(f"\nProcessando Caixa {i}...")
+
+    # 1. Captura de Imagem
+    capture_result = simulate_image_capture()
+    if capture_result["status"] != "success":
+        print("Erro na captura de imagem. Pulando para a próxima caixa.")
+        continue
+
+    # 2. Detecção de Objetos
+    detected_count = simulate_object_detection(capture_result["image_data"], expected_items_per_box)
+
+    # 3. Lógica de Decisão
+    if detected_count &lt; expected_items_per_box:
+        is_error = True
+        error_message = f"CAIXA {i}: ERRO! Embalagem(ns) faltando. Esperado: {expected_items_per_box}, Detectado: {detected_count}"
+    else:
+        is_error = False
+        error_message = f"CAIXA {i}: OK. Todas as embalagens presentes."
+
+    # 4. Acionamento de Alertas
+    trigger_local_alert(is_error)
+    send_software_message(error_message)
+
+    time.sleep(0.5) # Pequena pausa entre as caixas
+
+print("\n--- Simulação Concluída ---")
+</code></pre>
+<p>if <strong>name</strong> == "<strong>main</strong>":
+    main()
+```</p>
+<h3>Explicação do Código:</h3>
+<ul>
+<li><strong><code>simulate_image_capture()</code>:</strong> Representa a função de captura de imagem da câmera. Em um ambiente real, esta função leria dados de uma câmera industrial.</li>
+<li><strong><code>simulate_object_detection(image_data, expected_items)</code>:</strong> Simula o processo de inferência do modelo de IA. Em uma implementação real, esta função chamaria o modelo de detecção de objetos (treinado no Azure Custom Vision e implantado no Azure IoT Edge) para analisar a imagem e retornar o número de embalagens detectadas. A simulação inclui uma chance aleatória de detectar um item faltando para demonstrar o cenário de erro.</li>
+<li><strong><code>trigger_local_alert(is_error)</code>:</strong> Simula o acionamento da luz de aviso e do alarme sonoro. Em um sistema real, isso envolveria o envio de sinais para um microcontrolador ou módulo de I/O digital conectado à torre de sinalização.</li>
+<li><strong><code>send_software_message(message)</code>:</strong> Simula o envio de uma mensagem para um sistema de software (e.g., dashboard, sistema MES, Teams). Em uma implementação real, isso seria feito através do Azure IoT Hub e Azure Functions.</li>
+<li><strong><code>main()</code>:</strong> Orquestra o fluxo da simulação, processando uma série de caixas e aplicando a lógica de detecção e alerta.</li>
+</ul>
+<h3>Execução do Protótipo:</h3>
+<p>O protótipo foi executado no ambiente de sandbox, e a saída demonstra o comportamento esperado:</p>
+<p>```bash
+--- Simulador de Sistema de Visão Computacional ---</p>
+<p>Processando Caixa 1...
+Simulando captura de imagem...
+Simulando detecção de objetos na imagem...
+Itens esperados: 5, Itens detectados: 4</p>
+<p>!!! ALERTA LOCAL: LUZ VERMELHA LIGADA E ALARME SONORO ATIVADO !!!
+MENSAGEM SOFTWARE: CAIXA 1: ERRO! Embalagem(ns) faltando. Esperado: 5, Detectado: 4</p>
+<p>Processando Caixa 2...
+Simulando captura de imagem...
+Simulando detecção de objetos na imagem...
+Itens esperados: 5, Itens detectados: 5
+ALERTA LOCAL: LUZ VERDE LIGADA (OK)
+MENSAGEM SOFTWARE: CAIXA 2: OK. Todas as embalagens presentes.</p>
+<p>Processando Caixa 3...
+Simulando captura de imagem...
+Simulando detecção de objetos na imagem...
+Itens esperados: 5, Itens detectados: 5
+ALERTA LOCAL: LUZ VERDE LIGADA (OK)
+MENSAGEM SOFTWARE: CAIXA 3: OK. Todas as embalagens presentes.</p>
+<p>Processando Caixa 4...
+Simulando captura de imagem...
+Simulando detecção de objetos na imagem...
+Itens esperados: 5, Itens detectados: 5
+ALERTA LOCAL: LUZ VERDE LIGADA (OK)
+MENSAGEM SOFTWARE: CAIXA 4: OK. Todas as embalagens presentes.</p>
+<p>Processando Caixa 5...
+Simulando captura de imagem...
+Simulando detecção de objetos na imagem...
+Itens esperados: 5, Itens detectados: 5
+ALERTA LOCAL: LUZ VERDE LIGADA (OK)
+MENSAGEM SOFTWARE: CAIXA 5: OK. Todas as embalagens presentes.</p>
+<p>--- Simulação Concluída ---
+```</p>
+<p>Esta saída mostra que o simulador detectou corretamente uma embalagem faltando na Caixa 1 e acionou o alerta local e a mensagem de software, enquanto as outras caixas foram processadas como "OK".</p>
+<h2>2. Relevância para o Projeto Real</h2>
+<p>Este protótipo demonstra a lógica central do sistema. Na implementação real, as funções de simulação seriam substituídas por:</p>
+<ul>
+<li><strong><code>simulate_image_capture()</code>:</strong> Integração com o SDK da câmera industrial para capturar imagens reais.</li>
+<li><strong><code>simulate_object_detection()</code>:</strong> Chamada ao modelo de IA treinado no Azure Custom Vision e implantado como um módulo no Azure IoT Edge. Este módulo receberia a imagem real da câmera e retornaria as detecções.</li>
+<li><strong><code>trigger_local_alert()</code>:</strong> Comunicação com o hardware de alerta (torre de sinalização, alarme) via I/O digital do dispositivo Edge ou um microcontrolador intermediário.</li>
+<li><strong><code>send_software_message()</code>:</strong> Envio de mensagens para o Azure IoT Hub, que as rotearia para um Azure Function para processamento e envio de notificações para os sistemas de software definidos.</li>
+</ul>
+<p>Este protótipo serve como um ponto de partida para o desenvolvimento, permitindo validar a lógica antes de integrar com o hardware e os serviços de nuvem reais. Ele também pode ser usado como uma ferramenta de aprendizado para entender o fluxo de dados e a tomada de decisão no sistema. </p>

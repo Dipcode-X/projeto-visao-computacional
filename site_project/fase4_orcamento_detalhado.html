@@ -1,0 +1,69 @@
+<h1>Fase 4: Orçamento Detalhado e Análise de Custos</h1>
+<p>Esta seção apresenta uma estimativa de custos para a implementação do sistema de visão computacional, baseada na pesquisa de hardware e nos serviços Azure. Os preços são aproximados e podem variar significativamente dependendo do fornecedor, da região, das especificações exatas do modelo e de negociações.</p>
+<h2>1. Hardware</h2>
+<p>| Componente           | Item Sugerido                               | Quantidade | Preço Unitário Estimado (USD) | Preço Total Estimado (USD) |
+| :------------------- | :------------------------------------------ | :--------- | :---------------------------- | :------------------------- |
+| <strong>Câmeras Industriais</strong> | LUCID Triton (TRI023S-PC ou similar)        | 2          | $365 - $1,000                 | $730 - $2,000              |
+|                      | IDS uEye FA (modelo 2MP ou similar)         | 2          | $500 - $1,200                 | $1,000 - $2,400            |
+|                      | Basler ace 2 (com caixa IP67)               | 2          | $400 - $1,500 (câmera + caixa)| $800 - $3,000              |
+| <strong>Dispositivo Edge</strong> | NVIDIA Jetson Xavier NX Developer Kit       | 1          | $400 - $500                   | $400 - $500                |
+|                      | Gabinete Industrial para Jetson             | 1          | $100 - $300                   | $100 - $300                |
+|                      | Advantech UNO-2271G (ou similar)            | 1          | $700 - $900                   | $700 - $900                |
+| <strong>Mecanismos de Alerta</strong> | Torre de Sinalização Industrial (Patlite/Werma)| 1          | $150 - $400                   | $150 - $400                |
+|                      | Raspberry Pi Pico                           | 1          | $5 - $10                      | $5 - $10                   |
+|                      | Módulo Relé (para Raspberry Pi Pico)        | 1          | $10 - $30                     | $10 - $30                  |
+|                      | OU Módulo I/O Digital Industrial (Moxa/Advantech)| 1          | $200 - $500                   | $200 - $500                |
+| <strong>Acessórios</strong>       | Lentes (2 unidades)                         | 2          | $50 - $200                    | $100 - $400                |
+|                      | Cabos GigE PoE (2 unidades)                 | 2          | $30 - $80                     | $60 - $160                 |
+|                      | Switch PoE Gigabit (para 2 câmeras)         | 1          | $50 - $150                    | $50 - $150                 |
+|                      | Iluminadores LED Industriais (2 unidades)   | 2          | $100 - $300                   | $200 - $600                |</p>
+<p><strong>Observações sobre Hardware:</strong></p>
+<ul>
+<li>Os preços das câmeras variam muito com a resolução, FPS e fabricante. Os valores apresentados são estimativas para modelos que atendem aos requisitos mínimos.</li>
+<li>O Jetson Xavier NX é o kit de desenvolvimento. Para uma solução de produção, o módulo embarcado e um gabinete industrial seriam necessários, aumentando o custo.</li>
+<li>O módulo I/O digital industrial é uma alternativa mais robusta ao Raspberry Pi Pico para acionamento de alertas, mas com custo mais elevado.</li>
+</ul>
+<h2>2. Serviços Azure (Estimativa Mensal)</h2>
+<p>Os custos dos serviços Azure são baseados no consumo e podem variar significativamente. As estimativas abaixo são para um cenário de uso contínuo, considerando a inspeção de 12-20 caixas/minuto.</p>
+<p>| Serviço Azure        | Descrição                                   | Custo Mensal Estimado (USD) |
+| :------------------- | :------------------------------------------ | :-------------------------- |
+| <strong>Azure Custom Vision</strong> | Treinamento e armazenamento de imagens. O custo varia com o número de imagens, tags e horas de treinamento. | $50 - $300                  |
+|                      | Previsões (inferência) na nuvem (se usado como fallback ou para validação) | $10 - $100                  |
+| <strong>Azure IoT Hub</strong>    | Conectividade e mensagens entre o Edge e a nuvem. O custo depende do tier (Standard/Basic) e do número de mensagens. | $25 - $150                  |
+| <strong>Azure Functions</strong>  | Para processar mensagens do IoT Hub e enviar notificações. O custo é baseado no consumo (execuções e memória). | $5 - $50                    |
+| <strong>Azure Cosmos DB / SQL DB</strong> | Armazenamento de logs e dados de não conformidade. O custo varia com o throughput e armazenamento. | $30 - $200                  |
+| <strong>Azure Storage</strong>    | Armazenamento de imagens para treinamento e logs. | $5 - $20                    |
+| <strong>Total Mensal Estimado (Azure)</strong> |                                             | <strong>$125 - $820</strong>             |</p>
+<p><strong>Observações sobre Custos Azure:</strong></p>
+<ul>
+<li>A maior parte da inferência será feita no dispositivo Edge, o que reduzirá significativamente os custos de previsão do Custom Vision na nuvem.</li>
+<li>Os custos de treinamento do Custom Vision são pontuais (durante o desenvolvimento e retreinamentos periódicos).</li>
+<li>É altamente recomendável usar a calculadora de preços do Azure para uma estimativa mais precisa com base no uso esperado.</li>
+</ul>
+<h2>3. Custos de Desenvolvimento e Integração (Estimativa)</h2>
+<p>Além do hardware e dos serviços em nuvem, é importante considerar os custos associados ao desenvolvimento, configuração e integração do sistema.</p>
+<p>| Item                               | Descrição                                   | Custo Estimado (USD) |
+| :--------------------------------- | :------------------------------------------ | :------------------- |
+| <strong>Mão de Obra (Engenharia/Desenvolvimento)</strong> | Configuração do dispositivo Edge, desenvolvimento da lógica de inferência e alerta, integração com Azure, desenvolvimento de dashboards. | $5,000 - $15,000     |
+| <strong>Treinamento e Marcação de Dados</strong> | Tempo gasto na coleta e marcação das imagens para o Custom Vision. | $1,000 - $3,000      |
+| <strong>Testes e Validação</strong>             | Testes em ambiente de produção, ajustes e calibração. | $500 - $2,000        |
+| <strong>Total Estimado (Desenvolvimento)</strong> |                                             | <strong>$6,500 - $20,000</strong> |</p>
+<p><strong>Observações sobre Custos de Desenvolvimento:</strong></p>
+<ul>
+<li>Estes valores são estimativas para o tempo de um profissional qualificado. Podem ser reduzidos se você ou sua equipe tiverem as competências para realizar parte do trabalho.</li>
+</ul>
+<h2>4. Resumo do Orçamento Total (Estimativa Inicial)</h2>
+<p>Considerando as faixas de preço, podemos ter uma estimativa geral:</p>
+<p>| Categoria             | Faixa de Custo Estimada (USD) |
+| :-------------------- | :---------------------------- |
+| <strong>Hardware</strong>          | $1,500 - $4,500               |
+| <strong>Serviços Azure (1º ano)</strong> | $1,500 - $10,000 (considerando treinamento e 12 meses de uso) |
+| <strong>Desenvolvimento e Integração</strong> | $6,500 - $20,000              |
+| <strong>Total do Projeto (Estimativa Inicial)</strong> | <strong>$9,500 - $34,500</strong>          |</p>
+<p><strong>Análise de Custos:</strong></p>
+<ul>
+<li>O custo inicial de hardware é um investimento significativo, mas é um custo único.</li>
+<li>Os custos de Azure são recorrentes (mensais), mas podem ser otimizados com o uso eficiente dos recursos e a inferência na borda.</li>
+<li>O maior componente de custo pode ser a mão de obra para desenvolvimento e integração, especialmente se for necessário contratar especialistas externos. No entanto, este é o custo que pode ser mitigado com a capacitação interna, que é um dos objetivos deste projeto.</li>
+</ul>
+<p>Esta estimativa fornece uma base para o planejamento financeiro. A próxima fase será a criação do plano de capacitação técnica para que você possa adquirir as habilidades necessárias para implementar e gerenciar este projeto. </p>
